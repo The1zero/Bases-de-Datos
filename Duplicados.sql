@@ -51,3 +51,28 @@ FROM(
 	FROM platzi.alumnos
 )AS DUPLICADOS
 where DUPLICADOS.row > 1;
+
+
+
+
+
+DELETE FROM platzi.alumnos
+WHERE id IN (
+SELECT id
+FROM(
+	SELECT id, 
+	ROW_NUMBER() OVER(
+		PARTITION BY
+			nombre,
+			apellido,
+			email,
+			colegiatura,
+			fecha_incorporacion,
+			carrera_id,
+			tutor_id
+	ORDER BY id ASC
+	)as ROW
+	FROM platzi.alumnos
+)AS DUPLICADOS
+where DUPLICADOS.row > 1
+);
